@@ -2,13 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { get } from 'aws-amplify/api';
 
-import './App.css';
+import './css/normalize.css';
+import './css/app.css';
 
 interface Coin {
   name: string;
   symbol: string;
-  rank: number;
-  market_cap_usd: string;
   price_usd: string;
 }
 
@@ -111,28 +110,31 @@ const App = () => {
 
     updateLoading(false);
   }, [input]);
+
+  useEffect(() => {
+    fetchGitHubUserData();
+  }, []);
   
   useEffect(() => {
     fetchCoins();
-    fetchGitHubUserData();
   }, [fetchCoins]);
 
   return (
     <div className="App">
       <h1>cryptoapp</h1>
       {
-        <p>built by {loading ? '...' : (githubUser ? githubUser.login : 'ghost')}</p>
+        <p className="subtitle">built by {loading ? <span className="loading">...</span> : (githubUser ? <span title={githubUser.created_at}>{githubUser.login}</span> : <span title='A long time ago...'>ghost</span>)}</p>
       }
 
 
       <input onChange={e => updateInputValues('limit', e.target.value)} placeholder="limit" />
       <input placeholder="start" onChange={e => updateInputValues('start', e.target.value)} />
 
-      { loading ? <p>Loading...</p> :
+      { loading ? <p className="loading">Loading...</p> :
         coins.length > 0 ? (
           coins.map((coin, index) => (
-            <div key={index}>
-              <h2>{coin.name} - {coin.symbol}</h2>
+            <div className="coin" key={index}>
+              <h2>{coin.name} <span className="symbol">({coin.symbol})</span></h2>
               <p>${coin.price_usd}</p>
             </div>
           ))
