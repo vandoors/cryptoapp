@@ -8,8 +8,8 @@
         "setting": "open"
       }
     },
-    "/gh-born": {
-      "name": "/gh-born",
+    "/gh-user": {
+      "name": "/gh-user",
       "lambdaFunction": "cryptofunction",
       "permissions": {
         "setting": "open"

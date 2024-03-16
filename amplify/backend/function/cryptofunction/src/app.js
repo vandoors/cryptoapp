@@ -43,7 +43,7 @@ app.get('/coins', function(req, res) {
     .catch(err => res.json({ error: err }));
 });
 
-app.get('/gh-born', function(req, res) {
+app.get('/gh-user', function(req, res) {
   let apiUrl = `https://api.github.com/users/ghost`;
 
   if (req.apiGateway && req.apiGateway.event.queryStringParameters) {
