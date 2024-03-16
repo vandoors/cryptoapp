@@ -13,7 +13,8 @@ interface Coin {
 }
 
 interface GitHubUserResponse {
-  login: string
+  login: string,
+  created_at: string
 }
 
 interface CoinsResponse {
@@ -23,7 +24,8 @@ interface CoinsResponse {
 const isValidGitHubUser = (jsonResponse: any): jsonResponse is GitHubUserResponse => {
   return (
     jsonResponse &&
-    jsonResponse.login
+    jsonResponse.login &&
+    jsonResponse.created_at
   );
 }
 
@@ -64,8 +66,6 @@ const App = () => {
     } catch (error) {
       console.error("coinapi:", error);
     }
-
-    updateLoading(false);
   };
 
   const DEFAULT_LIMIT: number = 5;
@@ -119,20 +119,21 @@ const App = () => {
 
   return (
     <div className="App">
+      <h1>cryptoapp</h1>
+      {
+        <p>built by {loading ? '...' : (githubUser ? githubUser.login : 'ghost')}</p>
+      }
+
+
       <input onChange={e => updateInputValues('limit', e.target.value)} placeholder="limit" />
       <input placeholder="start" onChange={e => updateInputValues('start', e.target.value)} />
-      
-
-      {
-        <p>GitHub username: {githubUser ? githubUser.login : 'ghost'}</p>
-      }
 
       { loading ? <p>Loading...</p> :
         coins.length > 0 ? (
           coins.map((coin, index) => (
             <div key={index}>
               <h2>{coin.name} - {coin.symbol}</h2>
-              <h5>${coin.price_usd}</h5>
+              <p>${coin.price_usd}</p>
             </div>
           ))
         ) : (
