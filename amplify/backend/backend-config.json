@@ -1,1 +1,10 @@
-{}
+{
+  "function": {
+    "cryptofunction": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  }
+}
