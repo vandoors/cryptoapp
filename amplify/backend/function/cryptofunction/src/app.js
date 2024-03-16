@@ -27,12 +27,28 @@ app.use(function(req, res, next) {
 
 
 const axios = require('axios');
+
 app.get('/coins', function(req, res) {
   let apiUrl = `https://api.coinlore.com/api/tickers?start=0&limit=10`;
 
   if (req.apiGateway && req.apiGateway.event.queryStringParameters) {
     const { start = 0, limit = 10 } = req.apiGateway.event.queryStringParameters;
     apiUrl = `https://api.coinlore.com/api/tickers/?start=${start}&limit=${limit}`;
+  }
+
+  axios.get(apiUrl)
+    .then(response => {
+      res.json({ coins: response.data.data });
+    })
+    .catch(err => res.json({ error: err }));
+});
+
+app.get('/gh-born', function(req, res) {
+  let apiUrl = `https://api.github.com/users/ghost`;
+
+  if (req.apiGateway && req.apiGateway.event.queryStringParameters) {
+    const { username = ghost } = req.apiGateway.event.queryStringParameters;
+    apiUrl = `https://api.github.com/users/${username}`;
   }
 
   axios.get(apiUrl)
