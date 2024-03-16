@@ -27,18 +27,18 @@ app.use(function(req, res, next) {
 
 
 app.get('/coins', function(req, res) {
-  let apiUrl = `https://api.coinlore.com/api/tickers?start=0&limit=10`
+  let apiUrl = `https://api.coinlore.com/api/tickers?start=0&limit=10`;
 
   if (req.apiGateway && req.apiGateway.event.queryStringParameters) {
-   const { start = 0, limit = 10 } = req.apiGateway.event.queryStringParameters
-   apiUrl = `https://api.coinlore.com/api/tickers/?start=${start}&limit=${limit}`
+    const { start = 0, limit = 10 } = req.apiGateway.event.queryStringParameters;
+    apiUrl = `https://api.coinlore.com/api/tickers/?start=${start}&limit=${limit}`;
   }
 
   axios.get(apiUrl)
     .then(response => {
-      res.json({  coins: response.data.data })
-    }
-  ) .catch(err => res.json({ error: err }))
+      res.json({ coins: response.data.data });
+    })
+    .catch(err => res.json({ error: err }));
 });
 
 
