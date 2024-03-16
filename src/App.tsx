@@ -31,19 +31,30 @@ interface CoinsResponse {
   coins: Coin[];
 }
 
-// Return true if the response is a valid CoinsResponse (TypeScript stuff)
 const isValidCoinsResponse = (jsonResponse: any): jsonResponse is CoinsResponse => {
   return jsonResponse && jsonResponse.coins && Array.isArray(jsonResponse.coins);
 }
 
 const App = () => {
   const [coins, updateCoins] = useState<Coin[]>([]);
+  const [input, updateInput] = useState({ limit: 5, start: 0 });
+
+  const updateInputValues = (type: string, value: string) => {
+    updateInput({...input, [type]: value });
+  };
 
   const fetchCoins = async () => {
     try {
+      const { limit, start } = input;
       const restOperation = await get({
         apiName: "cryptoapi",
-        path: "/coins"
+        path: "/coins",
+        options: {
+          queryParams: {
+            limit: limit.toString(),
+            start: start.toString()
+          }
+        }
       });
   
       const { body } = await restOperation.response;
