@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { get } from 'aws-amplify/api';
 
@@ -43,7 +43,7 @@ const App = () => {
     updateInput({...input, [type]: value });
   };
 
-  const fetchCoins = async () => {
+  const fetchCoins = useCallback(async () => {
     try {
       const { limit, start } = input;
       const restOperation = await get({
@@ -68,17 +68,16 @@ const App = () => {
     } catch (error) {
       console.error("coinapi:", error);
     }
-  }
+  }, [input]);
   
   useEffect(() => {
     fetchCoins()
-  }, [])
+  }, [fetchCoins])
 
   return (
     <div className="App">
       <input onChange={e => updateInputValues('limit', e.target.value)} placeholder="limit" />
       <input placeholder="start" onChange={e => updateInputValues('start', e.target.value)} />
-      <button onClick={fetchCoins}>Fetch Coins</button>
       
       {
         coins.length > 0 ? (
