@@ -5,40 +5,71 @@ import { get } from 'aws-amplify/api';
 import './App.css';
 
 interface Coin {
-  id: string;
   name: string;
-  nameid: string;
   symbol: string;
-
   rank: number;
   market_cap_usd: string;
   price_usd: string;
-  price_btc: string;
+}
 
-  percent_change_1h: string;
-  percent_change_24h: string;
-  percent_change_7d: string;
-
-  volume24: number;
-  volume24a: number;
-
-  csupply: string;
-  msupply: string;
-  tsupply: string;
+interface GitHubUserResponse {
+  login: string
 }
 
 interface CoinsResponse {
   coins: Coin[];
 }
 
+const isValidGitHubUser = (jsonResponse: any): jsonResponse is GitHubUserResponse => {
+  return (
+    jsonResponse &&
+    jsonResponse.login
+  );
+}
+
 const isValidCoinsResponse = (jsonResponse: any): jsonResponse is CoinsResponse => {
-  return jsonResponse && jsonResponse.coins && Array.isArray(jsonResponse.coins);
+  return (
+    jsonResponse &&
+    jsonResponse.coins &&
+    Array.isArray(jsonResponse.coins)
+  );
 }
 
 const App = () => {
+  const [githubUser, updateGitHubUser] = useState<GitHubUserResponse>();
+
+  const fetchGitHubUserData = async () => {
+    try {
+      updateLoading(true);
+      const GITHUB_USERNAME: string = "vandoors"
+
+      const restOperation = await get({
+        apiName: "cryptoapi",
+        path: "/gh-user",
+        options: {
+          queryParams: {
+            username: GITHUB_USERNAME
+          }
+        }
+      });
+  
+      const { body } = await restOperation.response;
+      const jsonResponse = await body.json();
+  
+      if (isValidGitHubUser(jsonResponse)) {
+        updateGitHubUser(jsonResponse);
+      } else {
+        console.error("Unexpected response:", jsonResponse);
+      }
+    } catch (error) {
+      console.error("coinapi:", error);
+    }
+
+    updateLoading(false);
+  };
+
   const DEFAULT_LIMIT: number = 5;
   const DEFAULT_START: number = 0;
-
   const [coins, updateCoins] = useState<Coin[]>([]);
   const [input, updateInput] = useState({ limit: DEFAULT_LIMIT, start: DEFAULT_START });
   const [loading, updateLoading] = useState(true);
@@ -82,14 +113,20 @@ const App = () => {
   }, [input]);
   
   useEffect(() => {
-    fetchCoins()
-  }, [fetchCoins])
+    fetchCoins();
+    fetchGitHubUserData();
+  }, [fetchCoins]);
 
   return (
     <div className="App">
       <input onChange={e => updateInputValues('limit', e.target.value)} placeholder="limit" />
       <input placeholder="start" onChange={e => updateInputValues('start', e.target.value)} />
       
+
+      {
+        <p>GitHub username: {githubUser ? githubUser.login : 'ghost'}</p>
+      }
+
       { loading ? <p>Loading...</p> :
         coins.length > 0 ? (
           coins.map((coin, index) => (
