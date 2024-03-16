@@ -36,11 +36,18 @@ const isValidCoinsResponse = (jsonResponse: any): jsonResponse is CoinsResponse 
 }
 
 const App = () => {
+  const DEFAULT_LIMIT: number = 5;
+  const DEFAULT_START: number = 0;
+
   const [coins, updateCoins] = useState<Coin[]>([]);
-  const [input, updateInput] = useState({ limit: 5, start: 0 });
+  const [input, updateInput] = useState({ limit: DEFAULT_LIMIT, start: DEFAULT_START });
 
   const updateInputValues = (type: string, value: string) => {
-    updateInput({...input, [type]: value });
+    if (!value) {
+      return updateInput({ limit: DEFAULT_LIMIT, start: DEFAULT_START });
+    } else {
+      updateInput({...input, [type]: value });
+    }
   };
 
   const fetchCoins = useCallback(async () => {
