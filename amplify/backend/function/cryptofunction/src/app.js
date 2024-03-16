@@ -47,13 +47,13 @@ app.get('/gh-user', function(req, res) {
   let apiUrl = `https://api.github.com/users/ghost`;
 
   if (req.apiGateway && req.apiGateway.event.queryStringParameters) {
-    const { username = ghost } = req.apiGateway.event.queryStringParameters;
+    const { username = "ghost" } = req.apiGateway.event.queryStringParameters;
     apiUrl = `https://api.github.com/users/${username}`;
   }
 
   axios.get(apiUrl)
     .then(response => {
-      res.json({ coins: response.data.data });
+      res.json(response.data);
     })
     .catch(err => res.json({ error: err }));
 });
