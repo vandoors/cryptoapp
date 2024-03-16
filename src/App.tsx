@@ -41,6 +41,7 @@ const App = () => {
 
   const [coins, updateCoins] = useState<Coin[]>([]);
   const [input, updateInput] = useState({ limit: DEFAULT_LIMIT, start: DEFAULT_START });
+  const [loading, updateLoading] = useState(true);
 
   const updateInputValues = (type: string, value: string) => {
     if (!value) {
@@ -52,6 +53,7 @@ const App = () => {
 
   const fetchCoins = useCallback(async () => {
     try {
+      updateLoading(true);
       const { limit, start } = input;
       const restOperation = await get({
         apiName: "cryptoapi",
@@ -75,6 +77,8 @@ const App = () => {
     } catch (error) {
       console.error("coinapi:", error);
     }
+
+    updateLoading(false);
   }, [input]);
   
   useEffect(() => {
@@ -86,7 +90,7 @@ const App = () => {
       <input onChange={e => updateInputValues('limit', e.target.value)} placeholder="limit" />
       <input placeholder="start" onChange={e => updateInputValues('start', e.target.value)} />
       
-      {
+      { loading ? <p>Loading...</p> :
         coins.length > 0 ? (
           coins.map((coin, index) => (
             <div key={index}>
