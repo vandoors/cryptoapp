@@ -42,18 +42,22 @@ const App = () => {
   const [coins, updateCoins] = useState<Coin[]>([]);
 
   const fetchCoins = async () => {
-    const restOperation = await get({
-      apiName: "cryptoapi",
-      path: "/coins"
-    });
+    try {
+      const restOperation = await get({
+        apiName: "cryptoapi",
+        path: "/coins"
+      });
   
-    const { body } = await restOperation.response;
-    const jsonResponse = await body.json();
+      const { body } = await restOperation.response;
+      const jsonResponse = await body.json();
   
-    if (isValidCoinsResponse(jsonResponse)) {
-      updateCoins(jsonResponse.data);
-    } else {
-      console.error("Unexpected response:", jsonResponse);
+      if (isValidCoinsResponse(jsonResponse)) {
+        updateCoins(jsonResponse.data);
+      } else {
+        console.error("Unexpected response:", jsonResponse);
+      }
+    } catch (error) {
+      console.error("coinapi:", error);
     }
   }
   
