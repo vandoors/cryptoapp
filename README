@@ -1,2 +1,2 @@
 project 3
-an amplify react app that uses api gateway and lambda to fetch from the coinlore api
+an amplify react app that uses api gateway and lambda to fetch from a coinlore (and github) api
